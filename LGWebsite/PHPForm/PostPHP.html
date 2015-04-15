@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Candy Bouquet Order Form</title>
+</head>
+
+<body>
+
+   <div id="cborder">
+      <form id="SubmissionForm">
+       
+          <label for="fName">First Name: </label>
+          <input id="fName" type="text" placeholder="First name" name="fName" autofocus/><br/><br/>
+
+          <label for="lName">Last name: </label>
+          <input id="lName" type="text" placeholder="Last name" name="lName"/><br/><br/>
+          
+          <label for="bouquetType">What type of bouquet would you like? </label>
+          <input id="bouquetType" type="text" placeholder="Type" name="bouquetType"/><br/><br/>
+          
+          <label for="specs">Do you have any special requests for your bouquet? </label>
+          <input id="specs" type="text" name="specs"/><br/><br/>
+          
+          <label for="cardText">What message would you like on your card? </label>
+          <input id="cardText" type="text" placeholder="Message" name="cardText"/><br/><br/>
+
+          <label for="email">Email: </label>
+          <input id="email" type="email" placeholder="Email" name="email"/><br/><br/>
+
+          <input id="submit" type="button" value="Submit"/>
+          <input type="reset" value="Reset"/>
+
+       
+      </form>
+      <br>
+     <p id="p1"></p>
+    </div>
+   
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script>
+        $(document).ready(function() {
+console.log("ready");
+            $("#submit").click(function() {
+                var formData = ConvertFormToJSON("#SubmissionForm");
+                console.log("Data from form (to be sent): ", formData);
+
+                $.ajax({
+                    url: "ajax-post.php",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: formData,
+                    success: function(data) {
+                        console.log("Data returned from server: ", data);
+                        var listData = "";
+                        for(var key in data) {
+                            listData += key + ":" + data[key] + " ";
+                        }
+                        $("#p1").text(listData);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        $("#p1").text(jqXHR.statusText);
+                    }
+                });
+
+                function ConvertFormToJSON(form){
+                    var array = $(form).serializeArray();
+                    var json = {};
+
+                    jQuery.each(array, function() {
+                        json[this.name] = this.value || '';
+                    });
+                    return json;
+                }
+
+            });
+
+        });
+	</script>
+</body>
+
+
+</html>
